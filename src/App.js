@@ -1,24 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import { Card, Button, Row, Col } from 'react-bootstrap';
+import {API} from '../src/constants/index'
 
 
 function App() {   
   const [state, setState] = useState([]);
+  const [search, setSearch] = useState('');
+  const [errorSearch, setErrorSearch] = useState('');
+  const dead = 'Dead'
 
+  const handleSudmit = () => {
+    console.log('presionado')
+  }
+  const services = `${API}/?name=${search}`
+  console.log(services)
   useEffect(() => {
     const responseCards = async () => {
-      const request = await fetch('https://rickandmortyapi.com/api/character')
-      const response = await request.json();
-      setState(response.results);
+      const request = await fetch(services)
+      if (request.status === 200) {
+        const response = await request.json();
+        setState(response.results);
+        setErrorSearch('')
+      } else if (request.status === 404) {
+        setState([])
+        setErrorSearch('Personaje no encontrado :/')
+      }
     }
-    
     responseCards()
-  })
-  console.log(state);
+  }, [services])
+
   return (
     <div className="App">
       <div className='container'> 
+      <input
+          type="text"
+          placeholder="search"
+          onChange={(event) => {
+            setSearch(event.target.value)
+          }}
+        ></input>
         <Row className="g-4">
       {
         state.map((item) => ( 
@@ -32,7 +53,7 @@ function App() {
                   <p>{item.gender}</p>
                   <p>{item.species}</p>
                 </Card.Text>
-                <Button variant="primary" href={item.origin.url}>{item.origin.name}</Button>
+                <Button onClick={handleSudmit} variant="primary">{item.origin.name}</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -40,6 +61,7 @@ function App() {
       }
         </Row>
       </div>
+      <div className="errorMesages">{errorSearch}</div>
     </div>
   );
 }
