@@ -1,31 +1,15 @@
 .App {
   text-align: center;
   background: currentColor;
-  margin-top: 20px;
   padding-bottom: 20px;
+  font-family: 'Roboto', sans-serif;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-.pagination {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-}
-.pagination .page-item a {
-  position: relative;
-  display: block;
-  padding: 0.5rem 0.75rem;
-  margin-left: -1px;
-  line-height: 1.25;
-  color: #007bff;
-  background-color: #fff;
-  border: 1px solid #dee2e6;
-  text-decoration: none;
-  cursor: pointer;
-}
+
 .errorMesages{
   font-size: 20px;
   color: red;

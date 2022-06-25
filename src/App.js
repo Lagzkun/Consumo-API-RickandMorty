@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
-import { Card, Button, Row, Col } from 'react-bootstrap';
+import '../src/styles/main.css';
+import { Card, Button } from 'react-bootstrap';
 import {API} from '../src/constants/index'
-import ReactPaginate from 'react-paginate';
+import ReactPaginate from 'react-paginate'
+import rickandmorty from './assets/rickandmorty.png'
+import ErrorCharacter from './assets/nofound.jpeg'
 
 
 function App() {   
   const [state, setState] = useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [errorSearch, setErrorSearch] = useState('');
+  const [errorSearch, setErrorSearch] = useState(false);
   const [pages, setPages] = useState(42);
 
   //pagination
@@ -34,7 +37,7 @@ function App() {
         setErrorSearch('')
       } else if (request.status === 404) {
         setState([])
-        setErrorSearch('Personaje no encontrado :/')
+        setErrorSearch(true)
       }
     }
     responseCards()
@@ -49,41 +52,49 @@ function App() {
 
   return (
     <div className="App">
-      <div className='container'> 
-      <input
-          type="text"
-          placeholder="search"
-          onChange={(event) => {
-            setCurrentPage(1);
-            setSearch(event.target.value)
-          }}
-        ></input>
-        <Row className="g-4">
+      <div className='container'>
+        <div className='main-header'>
+          <img src={rickandmorty} alt="imagen de rickandmorty"/> 
+        </div>
+        <div className='input-sector'>
+          <input
+              type="text"
+              placeholder="search"
+              onChange={(event) => {
+                setCurrentPage(1);
+                setSearch(event.target.value)
+              }}
+            ></input>
+        </div>   
+        <div className="errorMesages">
+        {errorSearch ? <img src={ErrorCharacter}/> : ""}
+        </div>
+        <div className="page-card">
       {
         state.map((item) => ( 
-          <Col Col xs={6} md={3} className='card-sector' key={item.id}>
-            <Card>
-              <Card.Img variant="top" src={item.image} />
-              <Card.Body>
-                <Card.Title>{item.name}</Card.Title>
-                <Card.Text>
-                  <p>{item.status}</p>
-                  <p>{item.gender}</p>
-                  <p>{item.species}</p>
-                </Card.Text>
-                <Button variant="primary">{item.origin.name}</Button>
-              </Card.Body>
-            </Card>
-          </Col>
+            <div className='card-sector' key={item.id}>
+              
+                <Card.Img variant="top" src={item.image} />
+                <Card.Body>
+                  <Card.Title>{item.name}</Card.Title>
+                  <div className='info-card'>
+                    <div>{item.status}</div>
+                    <div>{item.gender}</div>
+                    <div>{item.species}</div>
+                  </div>
+                  <Button variant="primary">{item.origin.name}</Button>
+                </Card.Body>
+            
+            </div>
         ))
       }
       
-        </Row>
+        </div>
         <ReactPaginate
               className="pagination"
               nextLabel="Next"
               forcePage={currentPage === 1 ? 0 : currentPage - 1}
-              previousLabel="Prev"
+              previousLabel="Previous"
               previousClassName="prev-button"
               nextClassName="prev-button"
               activeClassName="active"
@@ -95,7 +106,6 @@ function App() {
               pageLinkClassName="page-link"
             />
       </div>
-      <div className="errorMesages">{errorSearch}</div>
     </div>
   );
 }
